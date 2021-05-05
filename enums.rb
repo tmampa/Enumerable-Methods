@@ -4,7 +4,7 @@ module Enumerable
       yield(item)
     end
     self
-  end 
+  end
 
   def my_each_with_index
     i = 0
@@ -13,8 +13,15 @@ module Enumerable
       i += 1
     end
   end
+
+  def my_select
+    i = 0
+    while i < self.length
+      yield(self[i])
+      i += 1
+    end
+  end
 end
 
-  fruits = ["apple", "banana", "strawberry", "pineapple"]
-
-  fruits.my_each_with_index { |fruit, index| puts "#{fruit} #{index}"}
+numbers = [1, 2, 3, 4, 5, 6, 7, 8]
+numbers.my_select{|number| puts number if number % 2 == 0}

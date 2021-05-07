@@ -1,6 +1,6 @@
 ![](https://img.shields.io/badge/Microverse-blueviolet)
 
-# Bubble Sort Algorithm
+# Enumerable Methods
 
 > In this project, we implement our own version of Ruby’s enumerable methods
 > my_each

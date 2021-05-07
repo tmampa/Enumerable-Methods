@@ -1,3 +1,6 @@
+# rubocop:disable Style/For
+# rubocop:disable Style/RedundantSelf
+
 module Enumerable
   def my_each
     for item in self
@@ -26,13 +29,13 @@ module Enumerable
     if block_given?
       self.my_each do |a|
         if yield(a)==false || yield(a).nil?
-        return false
+          return false
         end
       end
       true
     else
       self.my_all? do |b|
-      b != false && b.nil? != true
+          b != false && b.nil? != true
       end
     end
   end
@@ -47,13 +50,12 @@ module Enumerable
       for i in 0...self.size
         return true if self[i] 
       end
-      false
     end
   end
 
   def my_count
     if block_given?
-    counter = 0
+      counter = 0
     self.my_each do |a|
       counter += 1 if yield(a)
     end
@@ -64,7 +66,8 @@ module Enumerable
   end
 
   def my_map
-    return to_enum(:my_map) unless block_given?
+    return to_enum(:my_map)
+    unless block_given?
     new_arr = []
     for i in 0...self.size
       new_arr << yield(self[i])
@@ -79,8 +82,11 @@ module Enumerable
     end
     accum
   end
+end
 
-  def multiply_els
-    self.my_inject { |result, element| result * element }
-  end
+# rubocop:enable Style/For
+# # rubocop:enable Style/RedundantSelf
+
+def multiply_els
+  self.my_inject { |result, element| result * element }
 end

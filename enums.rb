@@ -27,14 +27,12 @@ module Enumerable
 
   def my_all?
     if block_given?
-      self.my_each do |a|
-        if yield(a) == false || yield(a).nil?
-          return false
-        end
+      my_each do |a|
+        return false if yield(a) == false || yield(a).nil?
       end
       true
     else
-      self.my_all? do |b|
+      my_all? do |b|
         b != false && b.nil? != true
       end
     end

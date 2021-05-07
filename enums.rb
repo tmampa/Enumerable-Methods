@@ -37,6 +37,20 @@ module Enumerable
     end
   end
 
+  def my_any?
+    if block_given?
+      for i in 0...self.size
+        return true if yield(self[i]) 
+      end
+      false
+    else
+      for i in 0...self.size
+        return true if self[i] 
+      end
+      false
+    end
+  end
+
   def my_count
     if block_given?
     counter = 0

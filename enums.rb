@@ -122,13 +122,33 @@ module Enumerable
     return my_map
   end
 
-  def my_inject(accum = self[0])
-    unshift(self[0]) unless accum == self[0]
-    (0...size).my_each do |i|
-      accum = yield(accum, self[i])
+  # rubocop:disable Metrics/CyclomaticComplexity
+  # rubocop:disable Metrics/PerceivedComplexity
+
+  def my_inject(num = nil, sym = nil)
+    if sym.instance_of?(Symbol) || sym.instance_of?(String)
+      my_inject = num
+      my_each do |item|
+        my_inject = my_inject.nil? ? item : my_inject.send(sym, item)
+      end
+      my_inject
+    elsif num.instance_of?(Symbol) || num.instance_of?(String)
+      my_inject = nil
+      my_each do |item|
+        my_inject = my_inject.nil? ? item : my_inject.send(num, item)
+      end
+      my_inject
+    else
+      my_inject = num
+      my_each do |item|
+        my_inject = my_inject.nil? ? item : yield(my_inject, item)
+      end
     end
-    accum
+    my_inject
   end
+
+  # rubocop:enable Metrics/CyclomaticComplexity
+  # rubocop:enable Metrics/PerceivedComplexity
 end
 
 # rubocop:enable Metrics/ModuleLength

@@ -49,21 +49,21 @@ module Enumerable
   end
 
   def my_any?(*params)
-    result = false
+    my_any = false
     if !params[0].nil?
       my_each do |item|
-        result = true if params[0] === item
+        my_any = true if params[0] === item
       end
     elsif !block_given?
       my_each do |item|
-        result = true if item
+        my_any = true if item
       end
     else
       to_a.my_each do |item|
-        result = true if yield item
+        my_any = true if yield item
       end
     end
-    result
+    my_any
   end
 
   def my_none?(*arg)
@@ -106,21 +106,18 @@ module Enumerable
     i
   end
 
-  def my_map(arg = nil)
-    arr = []
-    i = 0
-    if !arg.nil? && arg.respond_to?(:call)
-      while i < length
-        arr << arg.call(self[i])
-        i += 1
-      end
-    elsif arg.nil? && block_given?
-      while i < length
-        arr << yield(self[i])
-        i += 1
-      end
+  # rubocop:disable Style/NumericPredicate
+  # rubocop:disable Style/RedundantReturn
+
+  def my_map(*procs)
+    my_map = []
+    if procs.count == 0
+      self.my_each { |elem| my_map << yield(elem) }
+    else
+      proc = procs[0]
+      self.my_each(&proc)
     end
-    arr
+    return my_map
   end
 
   def my_inject(accum = self[0])
@@ -134,6 +131,8 @@ end
 
 # rubocop:enable Style/For
 # rubocop:enable Metrics/ModuleLength
+# rubocop:enable Style/NumericPredicate
+# rubocop:enable Style/RedundantReturn
 
 def multiply_els
   self.my_inject { |result, element| result * element }

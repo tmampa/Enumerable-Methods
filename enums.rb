@@ -1,6 +1,7 @@
 # rubocop:disable Style/For
 # rubocop:disable Style/RedundantSelf
 # rubocop:disable Style/CaseEquality
+# rubocop:disable Metrics/ModuleLength
 
 module Enumerable
   def my_each
@@ -57,13 +58,26 @@ module Enumerable
     result
   end
 
-  def my_none?
-    if block_given?
-      my_each { |i| return false if yield(i) }
+  def my_none?(*arg)
+    my_none = true
+    if !arg[0].nil?
+      my_each do |item|
+        my_none = false if arg[0] === item
+      end
+
+    elsif !block_given?
+      my_none = true
+      my_each do |item|
+        my_none = false if item
+      end
+
     else
-      my_each { |i| return false if i }
+      my_none = true
+      my_each do |item|
+        my_none = false if yield(item)
+      end
     end
-    true
+    my_none
   end
 
   def my_count
@@ -105,6 +119,7 @@ module Enumerable
 end
 
 # rubocop:enable Style/For
+# rubocop:enable Metrics/ModuleLength
 
 def multiply_els
   self.my_inject { |result, element| result * element }

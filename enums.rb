@@ -1,5 +1,6 @@
 # rubocop:disable Style/For
 # rubocop:disable Style/RedundantSelf
+# rubocop:disable Style/CaseEquality
 
 module Enumerable
   def my_each
@@ -38,10 +39,22 @@ module Enumerable
     end
   end
 
-  def my_any?
-    output = false
-    my_each { |item| output = true if yield(item) }
-    output
+  def my_any?(*params)
+    result = false
+    if !params[0].nil?
+      my_each do |item|
+        result = true if params[0] === item
+      end
+    elsif !block_given?
+      my_each do |item|
+        result = true if item
+      end
+    else
+      to_a.my_each do |item|
+        result = true if yield item
+      end
+    end
+    result
   end
 
   def my_none?
@@ -98,3 +111,4 @@ def multiply_els
 end
 
 # rubocop:enable Style/RedundantSelf
+# rubocop:enable Style/CaseEquality

@@ -27,17 +27,25 @@ module Enumerable
     end
   end
 
-  def my_all?
-    if block_given?
-      my_each do |a|
-        return false if yield(a) == false || yield(a).nil?
+  def my_all?(*arg)
+    my_all = true
+    if !arg[0].nil?
+      my_each do |item|
+        my_all = false unless arg[0] === item
       end
-      true
+
+    elsif !block_given?
+      my_all = true
+      my_each do |item|
+        my_all = false unless item
+      end
     else
-      my_all? do |b|
-        b != false && b.nil? != true
+      my_all = true
+      my_each do |item|
+        my_all = false unless yield(item)
       end
     end
+    my_all
   end
 
   def my_any?(*params)

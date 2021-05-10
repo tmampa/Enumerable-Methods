@@ -38,13 +38,10 @@ module Enumerable
     end
   end
 
-  def my_any
-    if block_given?
-      my_each { |i| return true if yield(i) }
-    else
-      my_each { |i| return true if i }
-    end
-    false
+  def my_any?
+    output = false
+    my_each { |item| output = true if yield(item) }
+    output
   end
 
   def my_none?

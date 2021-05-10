@@ -1,4 +1,3 @@
-# rubocop:disable Style/RedundantSelf
 # rubocop:disable Style/CaseEquality
 # rubocop:disable Metrics/ModuleLength
 
@@ -108,18 +107,17 @@ module Enumerable
     i
   end
 
-  # rubocop:disable Style/NumericPredicate
-  # rubocop:disable Style/RedundantReturn
+  def my_map(arg = nil)
+    return enum_for unless block_given?
 
-  def my_map(*procs)
-    my_map = []
-    if procs.count == 0
-      self.my_each { |elem| my_map << yield(elem) }
+    array = []
+    if arg.nil? && block_given?
+      my_each { |index| array.push(yield index) }
     else
-      proc = procs[0]
-      self.my_each(&proc)
+      result = arg
+      my_each { |index| array.push(result.call(index)) }
     end
-    return my_map
+    array
   end
 
   # rubocop:disable Metrics/CyclomaticComplexity
@@ -152,12 +150,9 @@ module Enumerable
 end
 
 # rubocop:enable Metrics/ModuleLength
-# rubocop:enable Style/NumericPredicate
-# rubocop:enable Style/RedundantReturn
 
 def multiply_els(array)
   array.my_inject(1) { |index, result| result * index }
 end
 
-# rubocop:enable Style/RedundantSelf
 # rubocop:enable Style/CaseEquality

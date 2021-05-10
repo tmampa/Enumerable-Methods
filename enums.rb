@@ -88,16 +88,22 @@ module Enumerable
     my_none
   end
 
-  def my_count
+  def my_count(*args)
+    i = 0
     if block_given?
-      counter = 0
-      my_each do |a|
-        counter += 1 if yield(a)
+      my_each do |x|
+        i += 1 if yield x
+      end
+    elsif args.empty?
+      my_each do |_x|
+        i += 1
       end
     else
-      counter = length
+      my_each do |x|
+        i += 1 if x == args[0]
+      end
     end
-    counter
+    i
   end
 
   def my_map(arg = nil)

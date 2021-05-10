@@ -1,30 +1,32 @@
-# rubocop:disable Style/For
 # rubocop:disable Style/RedundantSelf
 # rubocop:disable Style/CaseEquality
 # rubocop:disable Metrics/ModuleLength
 
 module Enumerable
-  def my_each
-    for item in self
-      yield(item)
-    end
+  def my_each(&block)
+    return to_enum(:my_each) unless block_given?
+
+    to_a.each(&block)
     self
   end
 
   def my_each_with_index
-    i = 0
-    while i < self.length
-      yield(self[i], i)
-      i += 1
+    return to_enum(:my_each_with_index) unless block_given?
+
+    (0...to_a.length).each do |i|
+      yield(to_a[i], i)
     end
+    self
   end
 
   def my_select
-    i = 0
-    while i < self.length
-      yield(self[i])
-      i += 1
+    return enum_for unless block_given?
+
+    arr = []
+    my_each do |i|
+      arr.push(i) if yield i
     end
+    arr
   end
 
   def my_all?(*arg)
@@ -122,20 +124,19 @@ module Enumerable
 
   def my_inject(accum = self[0])
     unshift(self[0]) unless accum == self[0]
-    (0...size).each do |i|
+    (0...size).my_each do |i|
       accum = yield(accum, self[i])
     end
     accum
   end
 end
 
-# rubocop:enable Style/For
 # rubocop:enable Metrics/ModuleLength
 # rubocop:enable Style/NumericPredicate
 # rubocop:enable Style/RedundantReturn
 
-def multiply_els
-  self.my_inject { |result, element| result * element }
+def multiply_els(array)
+  array.my_inject(1) { |index, result| result * index }
 end
 
 # rubocop:enable Style/RedundantSelf
